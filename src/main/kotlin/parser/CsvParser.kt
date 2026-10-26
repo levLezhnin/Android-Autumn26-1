@@ -11,7 +11,6 @@ object CsvParser {
     fun parse(lines: Sequence<String>): ParseResult {
         val players = mutableListOf<Player>()
         var skippedCount = 0
-        val teams = mutableMapOf<Pair<String, String>, Team>()
 
         val iterator = lines.iterator()
         if (iterator.hasNext()) {
@@ -72,12 +71,9 @@ object CsvParser {
                 continue
             }
 
-            val teamKey = Pair(teamName, city)
-            val team = teams.getOrPut(teamKey) { Team(teamName, city) }
-
             val player = Player(
                 name = name,
-                team = team,
+                team = Team(teamName, city),
                 position = position,
                 nationality = nationality,
                 agency = agency,
@@ -89,7 +85,6 @@ object CsvParser {
                 redCards = redCards
             )
             players.add(player)
-            team.addPlayer(player)
         }
 
         return ParseResult(players, skippedCount)

@@ -3,9 +3,12 @@ package resolver
 import model.Player
 import model.Position
 import model.Team
+import model.TeamSquad
 import java.text.NumberFormat
 
 class Resolver(private val players: List<Player>) : IResolver {
+
+    private val teamSquads: List<TeamSquad> by lazy { TeamSquad.fromPlayers(players) }
 
     override fun getCountWithoutAgency(): Int =
         players.count { it.agency == null }
@@ -29,18 +32,13 @@ class Resolver(private val players: List<Player>) : IResolver {
     }
 
     override fun getTheRudestTeam(): Team {
-        val result = players.groupBy { it.team }
-            .map {
-                (team, players) ->
-                team to players.map { it.redCards }.average()
-            }
-            .maxByOrNull { it.second }
+        val result = teamSquads.maxByOrNull { it.averageRedCards }
         if (result == null) {
             return Team("", "")
         }
-        println("Самая грязно играющая команда: " + result.first)
-        println("Среднее кол-во красных карт: " + result.second)
-        return result.first
+        println("Самая грязно играющая команда: " + result.team)
+        println("Среднее кол-во красных карт: " + result.averageRedCards)
+        return result.team
     }
 
     override fun getAverageTransferCostByPosition(): Map<Position, Double> {

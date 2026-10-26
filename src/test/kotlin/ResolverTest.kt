@@ -30,7 +30,6 @@ class ResolverTest {
             Player("P5", teamC, Position.GOALKEEPER, "Spain", "Agency C", 500, 50, 25, 25, 5, 5)
         )
 
-        players.forEach { it.team.addPlayer(it) }
         resolver = Resolver(players)
     }
 
